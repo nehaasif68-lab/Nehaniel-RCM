@@ -12,9 +12,9 @@ export async function middleware(request) {
         getAll() {
           return request.cookies.getAll();
         },
-        setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value }) => {
-            response.cookies.set(name, value);
+        setAll(cookies) {
+          cookies.forEach(({ name, value, options }) => {
+            response.cookies.set(name, value, options);
           });
         },
       },
@@ -31,6 +31,6 @@ export const config = {
     "/login",
     "/orgs/:path*",
     "/dashboard/:path*",
-    "/update-password"
+    "/update-password",
   ],
 };
