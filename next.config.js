@@ -1,7 +1,12 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   webpack: (config) => {
-    config.externals = [...(config.externals || []), 'ws', 'bufferutil', 'utf-8-validate'];
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      'bufferutil': false,
+      'utf-8-validate': false,
+      'ws': false,
+    };
     return config;
   },
 };
