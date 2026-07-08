@@ -2,12 +2,18 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse } from "next/server";
 
 export async function middleware(request) {
-  let response = NextResponse.next();
+  const response = NextResponse.next();
 
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-    {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+  if (!url || !key) {
+    console.error("Missing Supabase environment variables");
+    return response;
+  }
+
+  try {
+    const supabase = createServerClient(url, key, {
       cookies: {
         getAll() {
           return request.cookies.getAll();
@@ -18,10 +24,12 @@ export async function middleware(request) {
           });
         },
       },
-    }
-  );
+    });
 
-  await supabase.auth.getUser();
+    await supabase.auth.getUser();
+  } catch (error) {
+    console.error("Middleware Supabase error:", error);
+  }
 
   return response;
 }
